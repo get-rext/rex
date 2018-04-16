@@ -22,14 +22,17 @@
     "webpack-cli": "^2.0.14"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "path": "^0.12.7",
     "pg": "^7.4.1",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
+    "react-router-dom": "^4.2.2",
     "semantic-ui-react": "^0.79.1",
     "sequelize": "^4.37.6",
-    "styled-components": "^3.2.5"
+    "styled-components": "^3.2.5",
+    "xml2js": "^0.4.19"
   }
 }
