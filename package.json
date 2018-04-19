@@ -28,6 +28,7 @@
     "express": "^4.16.3",
     "file-loader": "^1.1.11",
     "image-webpack-loader": "^4.2.0",
+    "moment": "^2.22.1",
     "path": "^0.12.7",
     "pg": "^7.4.1",
     "proxify-url": "^1.0.1",

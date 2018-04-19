@@ -7,7 +7,7 @@ import {
   Container,
   Divider
 } from "semantic-ui-react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 class RecommendationEntry extends Component {
   state = { firstName: "", lastName: "", comments: "", inserted: false };
@@ -16,7 +16,7 @@ class RecommendationEntry extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log("Props data", this.props.entry);
+    console.log("Props data!!!!!!!!!", this.props.entry.id);
     const { firstName, lastName, comments } = this.state;
     // send our data to server and server will save to the db
     const {
@@ -26,7 +26,8 @@ class RecommendationEntry extends Component {
       imageUrl,
       link,
       rating,
-      yearPublished
+      yearPublished,
+      id
     } = this.props.entry;
 
     const category = "books";
@@ -44,9 +45,10 @@ class RecommendationEntry extends Component {
       lastName,
       comments,
       category,
-      userId
+      userId,
+      id
     };
-    console.log("book info Client Side: ", bookInfo);
+
     fetch(`/u/${userId}/${category}`, {
       method: "POST",
       body: JSON.stringify(bookInfo),
@@ -58,7 +60,6 @@ class RecommendationEntry extends Component {
         inserted: true
       })
     );
-    // render the browse view
   };
 
   render() {
@@ -70,6 +71,7 @@ class RecommendationEntry extends Component {
         <Form onSubmit={this.handleSubmit}>
           <Form.Group widths="equal">
             <Form.Field
+              required
               id="form-input-control-first-name"
               control={Input}
               label="Recommender's First name"
@@ -94,14 +96,12 @@ class RecommendationEntry extends Component {
             name="comments"
             onChange={this.handleChange}
           />
-          {/* <Link to="/browse"> */}
           <Form.Field
             id="form-button-control-public"
             control={Button}
             content="Save"
             label="Save to my list"
           />
-          {/* </Link> */}
         </Form>
       </Container>
     );

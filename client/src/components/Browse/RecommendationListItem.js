@@ -1,6 +1,6 @@
-import React from 'react';
-
-import { List } from 'semantic-ui-react';
+import React from "react";
+import moment from "moment";
+import { List } from "semantic-ui-react";
 
 const RecommendationListItem = props => (
   <div>
@@ -8,21 +8,21 @@ const RecommendationListItem = props => (
       <List.Item>
         <List.Content>
           <List.Header>Date</List.Header>
-          {props.book.date}
+          {moment(props.recommendation.date_added).format("L")}
         </List.Content>
       </List.Item>
 
       <List.Item>
         <List.Content>
           <List.Header>Recommender</List.Header>
-          {props.book.recommender}
+          {props.recommendation.recommender_name}
         </List.Content>
       </List.Item>
 
       <List.Item>
         <List.Content>
           <List.Header>Comments</List.Header>
-          {props.book.comments}
+          {props.recommendation.comment}
         </List.Content>
       </List.Item>
     </List>

@@ -1,3 +1,4 @@
+const { validateQuery } = require("../database/index");
 var express = require("express");
 var bodyParser = require("body-parser");
 var path = require("path");
@@ -72,11 +73,20 @@ app.get("/u/:userId/:category", (req, res) => {
 
 app.post("/u/:userId/:category", (req, res) => {
   const { userId, category } = req.params;
-  console.log("req.body", req.body);
-
-  insertQuery(ADD_REC(req.body))
-    .then(sqlResponse => res.json({ inserted: "success" }))
-    .catch(err => console.log(err));
+  //check if the book already exists (user_id + book_id)
+  validateQuery(
+    `select exists(select 1 from recommendations r inner join books b on b.id = r.item_id where r.user_id=${
+      req.body.userId
+    } AND b.api_id=${req.body.id});`
+  ).then(exist => {
+    if (exist[0][0].exists) {
+      res.json({ alreadyExist: true });
+    } else {
+      insertQuery(ADD_REC(req.body))
+        .then(sqlResponse => res.json({ inserted: "success" }))
+        .catch(err => console.log(err));
+    }
+  });
 });
 
 app.get("*", function(req, res) {

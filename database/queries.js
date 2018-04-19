@@ -18,7 +18,6 @@ exports.FETCH_BOOKS = (userId, category) => `
 // };
 
 exports.ADD_REC = bookInfo => {
-  console.log("bookInfo Database Side~~~~~~~~~", bookInfo);
   let {
     title,
     description,
@@ -30,7 +29,8 @@ exports.ADD_REC = bookInfo => {
     lastName,
     item_id,
     category,
-    comments
+    comments,
+    id
   } = bookInfo;
 
   let newDescription = description
@@ -42,23 +42,13 @@ exports.ADD_REC = bookInfo => {
   let newTitle = title.replace(/\'/gi, "''");
   let newComments = comments.replace(/\'/gi, "''");
   let recommender_name = firstName + " " + lastName;
-  console.log(
-    "bookinfo after cleaning up~~~~~~~~~~~",
-    "description",
-    newDescription,
-    "title",
-    newTitle,
-    "coments",
-    newComments,
-    "recommender_name",
-    recommender_name
-  );
+
   return `WITH book AS 
-( INSERT INTO books(id, title, thumbnail_url, description, url) 
-VALUES(DEFAULT, '${newTitle}', '${imageUrl}', '${newDescription}', '${link}') RETURNING id )
+( INSERT INTO books(id, api_id, title, thumbnail_url, description, url) 
+VALUES(default, '${id}', '${newTitle}', '${imageUrl}', '${newDescription}', '${link}') RETURNING id )
 INSERT INTO recommendations 
 (id, recommender_id, user_id, recommender_name, comment, item_id, date_added, category) 
-VALUES(DEFAULT, null, 3, '${recommender_name}', '${newComments}', 
+VALUES(default, null, 3, '${recommender_name}', '${newComments}', 
         ( SELECT id from book ), default, '${category}');`;
 };
 
