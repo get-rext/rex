@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Icon } from "semantic-ui-react";
+import BookDetail from "./Entry/BookDetail";
 
 const BookItemContainer = styled.div`
   display: flex;
@@ -12,15 +13,15 @@ const BookItemContainer = styled.div`
   overflow: hidden;
 `;
 
-const BookItem = ({ book, recommendations }) => {
-  const { title, description, thumbnail_url } = book;
-  const firstRecommender = recommendations[0];
+const BookItem = props => {
+  const { title, description, thumbnail_url } = props.book;
+  const firstRecommender = props.recommendations[0];
 
   return (
     <li>
       <BookItemContainer>
         <div style={{ width: "20%" }}>
-          Recommenders: {recommendations.length}
+          Recommenders: {props.recommendations.length}
         </div>
         <div
           style={{
@@ -39,7 +40,7 @@ const BookItem = ({ book, recommendations }) => {
         </div>
         <div style={{ width: "58%", display: "flex", flexWrap: "wrap" }}>
           <div style={{ width: "100%" }}>
-            <h1>{title}</h1>
+            <h1 onClick={() => props.handleClick(props)}>{title}</h1>
             {description}
           </div>
           <div style={{ width: "100%", alignSelf: "flex-end" }}>

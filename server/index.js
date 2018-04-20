@@ -1,3 +1,4 @@
+const { validateQuery } = require("../database/index");
 var express = require("express");
 var bodyParser = require("body-parser");
 var path = require("path");
@@ -7,7 +8,12 @@ const {
   updateQuery,
   deleteQuery
 } = require("../database/index");
-const { FETCH_BOOKS, ADD_BOOK, ADD_REC } = require("../database/queries");
+const {
+  FETCH_BOOKS,
+  ADD_BOOK,
+  ADD_REC,
+  ADD_REC_TO_EXISTING_BOOK
+} = require("../database/queries");
 
 const app = express();
 
@@ -72,9 +78,35 @@ app.get("/u/:userId/:category", (req, res) => {
 
 app.post("/u/:userId/:category", (req, res) => {
   const { userId, category } = req.params;
-  console.log("req.body", req.body);
+  //check if the book already exists (user_id + book_id)
 
-  insertQuery(ADD_REC(req.body))
+  validateQuery(
+    `select exists(select 1 from recommendations r inner join books b on b.id = r.item_id where r.user_id=${
+      req.body.userId
+    } AND b.api_id=${req.body.apiId});`
+  ).then(exist => {
+    if (exist[0][0].exists) {
+      res.json({ alreadyExist: true });
+    } else {
+      insertQuery(ADD_REC(req.body))
+        .then(sqlResponse => res.json({ inserted: "success" }))
+        .catch(err => console.log(err));
+    }
+  });
+});
+
+app.post("/u/:userId/:category/:bookId", (req, res) => {
+  const { userId, category, bookId } = req.params;
+  const { id, firstName, lastName, comments } = req.body;
+  const recInfo = {
+    userId,
+    category,
+    id,
+    firstName,
+    lastName,
+    comments
+  };
+  insertQuery(ADD_REC_TO_EXISTING_BOOK(recInfo))
     .then(sqlResponse => res.json({ inserted: "success" }))
     .catch(err => console.log(err));
 });

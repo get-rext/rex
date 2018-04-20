@@ -46,21 +46,27 @@ class EntryListView extends React.Component {
       key: "KB2ywbcnLjNO8pokkBVgg"
     };
     const entries = this;
-    const url = proxify(`https://www.goodreads.com/book/show.xml?id=${params.id}&key=${params.key}`, {inputFormat: 'xml'});
+    const url = proxify(
+      `https://www.goodreads.com/book/show.xml?id=${params.id}&key=${
+        params.key
+      }`,
+      { inputFormat: "xml" }
+    );
     axios
       .get(url)
       .then(res => {
         const book = res.data.query.results.GoodreadsResponse.book;
+        console.log("!!!!!!!!!!!!!", book);
         entries.setState({
           resultDetail: {
             title: book.title,
             rating: book.average_rating,
-            apiId: data.result.id,
+            apiId: book.id,
             authors: book.authors.author.map(author => {
               if (author.role) {
                 return `${author.name} (${author.role})`;
               }
-              return author.name
+              return author.name;
             }),
             yearPublished: book.publication_year,
             description: book.description
@@ -72,7 +78,7 @@ class EntryListView extends React.Component {
         });
       })
       .catch(err => {
-      console.error(err);
+        console.error(err);
       });
   }
 
@@ -84,24 +90,27 @@ class EntryListView extends React.Component {
     };
     const entries = this;
 
-    const url = proxify(`https://www.goodreads.com/search/index.xml?q=${params.q}&key=${params.key}`,
-      {inputFormat: 'xml'});
+    const url = proxify(
+      `https://www.goodreads.com/search/index.xml?q=${params.q}&key=${
+        params.key
+      }`,
+      { inputFormat: "xml" }
+    );
 
     axios
       .get(url)
       .then(res => {
-        const resultItems = res.data.query.results.GoodreadsResponse.search.results.work;
-        const books = resultItems.map(
-          book => {
-            return {
-              title: book.best_book.title,
-              rating: Number(book.average_rating),
-              apiId: Number(book.best_book.id.content),
-              author: book.best_book.author.name,
-              imageUrl: book.best_book.image_url
-            };
-          }
-        );
+        const resultItems =
+          res.data.query.results.GoodreadsResponse.search.results.work;
+        const books = resultItems.map(book => {
+          return {
+            title: book.best_book.title,
+            rating: Number(book.average_rating),
+            apiId: Number(book.best_book.id.content),
+            author: book.best_book.author.name,
+            imageUrl: book.best_book.image_url
+          };
+        });
         entries.setState({
           results: books
         });
