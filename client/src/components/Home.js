@@ -1,76 +1,112 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
-import {
-  Dropdown,
-  Menu,
-  Button,
-  Container,
-  Header,
-  Icon
-} from "semantic-ui-react";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import './Home.css';
+import book from '../images/book.png';
+import music from '../images/music.png';
+import movie from '../images/movie.png';
+import food from '../images/food.png';
+import NavBar from './NavBar';
+import { Route, Link, BrowserRouter, Switch, Redirect } from 'react-router-dom';
+import { Dropdown, Menu, Button, Container, Header, Icon } from 'semantic-ui-react';
 
-const ButtonContainer = styled.ul`
-  width: 100%;
-  padding: 10%;
-`;
+import { Row, Col } from 'reactstrap';
 
-// const FindRecommendationButton = () => (
-//   <Link to="/browse">
-//     <Button>
-//       Find Something from <Category />
-//     </Button>
-//   </Link>
-// );
+import BookDetail from './Entry/BookDetail';
 
 const NewRecommendationButton = () => (
-  <Container>
+  <div className="newRecButton">
     <Link to="/entry">
-      <Button animated="fade">
-        <Button.Content visible>Enter New Recommendation</Button.Content>
-        <Button.Content hidden>+</Button.Content>
+      <Button size="massive" color="teal" borderRadius="30px">
+        New Recommendations
+        <Icon className="plus" name="plus" />
       </Button>
     </Link>
-  </Container>
+  </div>
 );
 
 class Home extends Component {
   state = {
-    category: ""
+    category: '',
+    imageStatus: 'loading',
   };
+  handleImageLoaded() {
+    this.setState({ imageStatus: 'loaded' });
+  }
+
+  handleImageErrored() {
+    this.setState({ imageStatus: 'failed to load' });
+  }
 
   render() {
     return (
-      <ButtonContainer>
-        <div className="new-recommendation-button">
-          <NewRecommendationButton />
+      <div>
+        <NavBar />
+        <div className="userName">Welcome! {this.props.username}</div>
+
+        <div className="icon-list">
+          <div>
+            <Link to="/browse">
+              <img
+                src={book}
+                width="80"
+                height="80"
+                onLoad={this.handleImageLoaded.bind(this)}
+                onError={this.handleImageErrored.bind(this)}
+              />
+            </Link>
+          </div>
+          <div>
+            <img
+              src={food}
+              width="80"
+              height="80"
+              onLoad={this.handleImageLoaded.bind(this)}
+              onError={this.handleImageErrored.bind(this)}
+            />
+          </div>
+          <div>
+            <img
+              src={music}
+              width="80"
+              height="80"
+              onLoad={this.handleImageLoaded.bind(this)}
+              onError={this.handleImageErrored.bind(this)}
+            />
+          </div>
+          <div>
+            <img
+              src={movie}
+              width="80"
+              height="80"
+              onLoad={this.handleImageLoaded.bind(this)}
+              onError={this.handleImageErrored.bind(this)}
+            />
+          </div>
         </div>
-        <div className="find-recommendation-button">
-          <FindRecommendationButton category={this.state.category} />
+        <div>
+          <div className="newRec-button">
+            <NewRecommendationButton />
+          </div>
         </div>
-      </ButtonContainer>
+      </div>
     );
   }
 }
 
 class FindRecommendationButton extends Component {
   state = {
-    category: ""
+    category: '',
   };
 
   render() {
     return (
       <div>
         <Menu vertical>
-          <Dropdown
-            text="Find Something from"
-            pointing="left"
-            className="link item"
-          >
+          <Dropdown text="Find Something from" pointing="left" className="link item">
             <Dropdown.Menu>
               <Dropdown.Item
                 onClick={() => {
-                  this.setState({ category: "books" });
+                  this.setState({ category: 'books' });
                   //<Redirect to="/browse" />;
                   //redirect is like component
                 }}

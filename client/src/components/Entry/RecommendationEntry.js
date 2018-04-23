@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import {
   Form,
   Input,
@@ -6,14 +7,13 @@ import {
   Button,
   Container,
   Divider
-} from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom';
+} from "semantic-ui-react";
 
 class RecommendationEntry extends Component {
   state = {
-    firstName: '',
-    lastName: '',
-    comments: '',
+    firstName: "",
+    lastName: "",
+    comments: "",
     inserted: false
   };
 
@@ -21,7 +21,6 @@ class RecommendationEntry extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log('Props data!!!!!!!!!', this.props.entry.id);
     const { firstName, lastName, comments } = this.state;
     // send our data to server and server will save to the db
     const {
@@ -35,9 +34,8 @@ class RecommendationEntry extends Component {
       apiId
     } = this.props.entry;
 
-    const category = 'books';
+    const category = "books";
     const userId = 3;
-
     const bookInfo = {
       title,
       imageUrl,
@@ -55,10 +53,10 @@ class RecommendationEntry extends Component {
     };
 
     fetch(`/u/${userId}/${category}`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(bookInfo),
       headers: new Headers({
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       })
     })
       .then(res => {
@@ -113,7 +111,6 @@ class RecommendationEntry extends Component {
             id="form-button-control-public"
             control={Button}
             content="Save"
-            label="Save to my list"
           />
         </Form>
       </Container>

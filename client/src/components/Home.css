@@ -1,43 +1,75 @@
-.row {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  margin-top: 15%;
-}
 h1:first-child,
 h2:first-child,
 h3:first-child,
 h4:first-child,
 h5:first-child {
-  margin-top: 100px;
   text-align: center;
-  border: solid 2px white;
-
-  padding: 60px;
+  border: solid 2px none;
+  margin-top: 30px;
 }
 
 body {
   padding: 50;
-  font-family: 'Open Sans Condensed', sans-serif;
-  /* background: url("../images/header.gif");
-  background-repeat: no-repeat; */
-  opacity: 0.9;
-}
-div.transbox {
-  margin: 20px;
-  background-color: #ffffff;
+  font-family: "Open Sans Condensed", sans-serif;
+  background: url("../images/wood.png") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 
-  opacity: 0.6;
-  filter: alpha(opacity=60); /* For IE8 and earlier */
+  max-height: fit-content;
 }
 
-div.transbox h1 {
-  margin: 1%;
-  font-weight: bold;
-  color: #000000;
+.add-rec {
+  display: flex;
+  margin-top: 30px;
+  margin-left: 40%;
+  border-radius: 20px;
 }
-div.background {
-  background-color: turquoise;
+.userName {
+  text-align: center;
+  margin-top: 50px;
+  color: white;
+  font-family: sans-serif;
+  font-size: 50px;
+}
+.icons {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+div.ui.selection.dropdown,
+div.ui.search {
+  width: 60%;
+  margin-left: 25%;
+  max-width: 500px;
+  border-radius: 20px;
+}
+i.icon.plus:before {
+  content: "\f067";
+  margin-left: 20px;
+}
+
+.newRec-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  margin-top: 50px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+}
+
+.icon-list {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  margin-top: 100px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
 }
 
 .iconRow {

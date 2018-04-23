@@ -1,7 +1,10 @@
+import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { Icon } from 'semantic-ui-react';
 import BookDetail from './Entry/BookDetail';
+import './BookItem.css';
 
 const BookItemContainer = styled.div`
   display: flex;
@@ -9,7 +12,7 @@ const BookItemContainer = styled.div`
   border: 1px solid grey;
   border-width: hairline;
   border-radius: 5px;
-  padding: 5px;
+  padding: 15px;
   overflow: hidden;
 `;
 
@@ -20,7 +23,7 @@ const BookItem = ({
   markCompleted,
   deleteBook,
   category,
-  handleClick
+  handleClick,
 }) => {
   const { title, description, thumbnail_url } = book;
   const firstRecommender = recommendations[0];
@@ -28,56 +31,28 @@ const BookItem = ({
   return (
     <li>
       <BookItemContainer>
-        <div style={{ width: '20%' }}>
-          Recommenders: {recommendations.length}
+        <span className="recommender">Recommenders: {recommendations.length}</span>
+        <div className="book-image-container">
+          <img className="book-image" src={`${thumbnail_url}`} alt="" />
         </div>
-        <div
-          style={{
-            width: '12%',
-            padding: '5px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <img
-            src={`${thumbnail_url}`}
-            alt=""
-            style={{ height: '100px', borderRadius: '20px' }}
-          />
-        </div>
-        <div style={{ width: '58%', display: 'flex', flexWrap: 'wrap' }}>
-          <div style={{ width: '100%' }}>
-            <h1 onClick={() => handleClick({ book, recommendations, id })}>
-              {title}
-            </h1>
-            {description}
+        <div className="book-detail-container">
+          <div className="book-title-container">
+            <h2 className="book-title" onClick={handleClick}>
+              <Link to={{ pathname: `/browse/${id}`, query: { book, id, recommendations } }}>
+                {title}
+              </Link>
+            </h2>
+            <p className="book-description">{description}</p>
           </div>
-          <div style={{ width: '100%', alignSelf: 'flex-end' }}>
-            <span style={{ fontWeight: 'bold' }}>Recommended By:</span>{' '}
-            {firstRecommender.recommender_name}{' '}
-            <span style={{ fontWeight: 'bold' }}>Date:</span>{' '}
-            {firstRecommender.date_added}
+          <div className="book-recommender-container">
+            <span className="book-recommender-name">Recommended By:</span>{' '}
+            {firstRecommender.recommender_name} <span className="book-recommended-date">Date:</span>{' '}
+            {moment(firstRecommender.date_added).format('L')}
           </div>
         </div>
-        <div
-          style={{
-            width: '10%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Icon
-            name="check"
-            onClick={() => markCompleted({ category, id })}
-            size="big"
-          />
-          <Icon
-            name="trash"
-            onClick={() => deleteBook({ category, id })}
-            size="big"
-          />
+        <div className="book-action-container">
+          <Icon name="check" onClick={() => markCompleted({ category, id })} size="big" />
+          <Icon name="trash" onClick={() => deleteBook({ category, id })} size="big" />
         </div>
       </BookItemContainer>
     </li>

@@ -31,7 +31,7 @@ const {
 
 // Middleware to retrieve userId from request
 const getUserId = (req, res, next) => {
-  const sessions = req.sessionStore.sessions;
+  const { sessions } = req.sessionStore;
 
   for (const [key, val] of Object.entries(sessions)) {
     const uuid = JSON.parse(sessions[key]).uuid;
@@ -68,7 +68,7 @@ app.post('/login', (req, res) => {
           const key = uuidv4();
           authObj[key] = id;
           req.session.uuid = key;
-          res.send({ isAuthenticated: true });
+          res.send({ isAuthenticated: true, username });
         } else {
           res.send({ isAuthenticated: false });
         }
@@ -96,7 +96,7 @@ app.post('/signup', (req, res) => {
           const key = uuidv4();
           authObj[key] = id;
           req.session.uuid = key;
-          res.send({ isAuthenticated: true });
+          res.send({ isAuthenticated: true, username });
         });
       });
     });
@@ -159,17 +159,40 @@ app.get('/u/:userId/:category', getUserId, (req, res) => {
     .catch(err => res.end('404', err));
 });
 
+// ADD RECOMMENDATION WHEN BOOKID KNOWN
+app.post("/r/:category/:bookId", getUserId, (req, res) => {
+  const { category, bookId } = req.params;
+  const { id, firstName, lastName, comments } = req.body;
+  const { userId } = req;
+  const recInfo = {
+    userId,
+    category,
+    id,
+    firstName,
+    lastName,
+    comments
+  };
+  insertQuery(ADD_REC_TO_EXISTING_BOOK(recInfo))
+    .then(sqlResponse => res.json({ inserted: "success" }))
+    .catch(err => console.log(err));
+});
+
+
 // ADD NEW RECOMMENDATION
-app.post('/u/:userId/:category', getUserId, (req, res) => {
+app.post('/u/:userId/:category/', getUserId, (req, res) => {
   const { category } = req.params;
   const {
     apiId, firstName, lastName, comments,
   } = req.body;
-  const userId = req.userId;
+
+  const { userId } = req;
+
+  console.log('adding recommendation');
 
   promiseQuery(CHECK_BOOK({ apiId }))
     .then((bookIdObj) => {
       const bookId = bookIdObj[0].id;
+      console.log('book in db');
 
       validateQuery(CHECK_EXISTING_REC({ userId, apiId })).then((exist) => {
         const recommendationsExist = exist[0][0].exists;

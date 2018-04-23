@@ -1,26 +1,26 @@
-import React from 'react';
-import { Search, Dropdown, Rating, Container } from 'semantic-ui-react';
-import axios from 'axios';
-import proxify from 'proxify-url';
-import _ from 'lodash';
-
-import './EntryListView.css';
-import BookDetail from './Entry/BookDetail';
-import EntryDetail from './Entry/EntryDetail';
+import React from "react";
+import axios from "axios";
+import proxify from "proxify-url";
+import { Search, Dropdown, Rating, Container } from "semantic-ui-react";
+import BookDetail from "./Entry/BookDetail";
+import EntryDetail from "./Entry/EntryDetail";
+import NavBar from "./NavBar";
+import "./EntryListView.css";
+import _ from "lodash";
 
 class EntryListView extends React.Component {
   constructor() {
     super();
     this.state = {
-      category: 'books',
+      category: "books",
       categoryOptions: [
         {
-          text: 'books',
-          value: 'books'
+          text: "books",
+          value: "books"
         },
         {
-          text: 'movies',
-          value: 'movies'
+          text: "movies",
+          value: "movies"
         }
       ],
       results: [],
@@ -33,7 +33,7 @@ class EntryListView extends React.Component {
   }
 
   renderResult(result) {
-    if (this.state.category === 'books') {
+    if (this.state.category === "books") {
       return (
         <div>
           <img className="entry-image" src={result.imageUrl} />
@@ -48,33 +48,36 @@ class EntryListView extends React.Component {
           />
         </div>
       );
-    } else if (this.state.category === 'movies') {
+    } else if (this.state.category === "movies") {
       return (
         <div>
-          <img className='entry-image' src={'https://image.tmdb.org/t/p/w500'} />
+          <img
+            className="entry-image"
+            src={"https://image.tmdb.org/t/p/w500"}
+          />
         </div>
-      )
+      );
     }
   }
 
   handleResultSelect(e, data) {
     const params = {
       id: data.result.apiId,
-      key: 'KB2ywbcnLjNO8pokkBVgg'
+      key: "KB2ywbcnLjNO8pokkBVgg"
     };
     const self = this;
     const url = proxify(
       `https://www.goodreads.com/book/show.xml?id=${params.id}&key=${
         params.key
       }`,
-      { inputFormat: 'xml' }
+      { inputFormat: "xml" }
     );
 
     axios
       .get(url)
       .then(res => {
         const book = res.data.query.results.GoodreadsResponse.book;
-        console.log('!!!!!!!!!!!!!', book);
+        console.log("!!!!!!!!!!!!!", book);
         let authors;
         if (Array.isArray(book.authors.author)) {
           authors = book.authors.author
@@ -84,7 +87,7 @@ class EntryListView extends React.Component {
               }
               return author.name;
             })
-            .join(', ');
+            .join(", ");
         } else {
           authors = book.authors.author.name;
         }
@@ -96,11 +99,15 @@ class EntryListView extends React.Component {
             authors,
             yearPublished: book.publication_year,
             description: book.description
-              .split('<br /><br />')
-              .map(paragraph => paragraph.replace(/<.*?>/gm, '')),
+              .split("<br /><br />")
+              .map(paragraph => paragraph.replace(/<.*?>/gm, "")),
             imageUrl: book.image_url,
             link: book.link
           }
+        });
+        self.props.history.push({
+          pathname: `/entry/${self.state.resultDetail.apiId}`,
+          state: { result: self.state.resultDetail }
         });
       })
       .catch(err => {
@@ -113,49 +120,46 @@ class EntryListView extends React.Component {
     this.setState({
       results: []
     });
-    console.log('search fired', `category: ${this.state.category}`);
-    if (this.state.category === 'books') {
-
+    console.log("search fired", `category: ${this.state.category}`);
+    if (this.state.category === "books") {
       const params = {
-        q: data.value.replace(/\s+/g, '-'),
-        key: 'KB2ywbcnLjNO8pokkBVgg'
+        q: data.value.replace(/\s+/g, "-"),
+        key: "KB2ywbcnLjNO8pokkBVgg"
       };
       const self = this;
       const url = proxify(
         `https://www.goodreads.com/search/index.xml?q=${params.q}&key=${
           params.key
         }`,
-        { inputFormat: 'xml' }
+        { inputFormat: "xml" }
       );
-  
-      axios
-        .get(url)
-        .then(res => {
-          const resultItems =
-            res.data.query.results.GoodreadsResponse.search.results.work;
-          const books = resultItems.map(book => {
-            return {
-              title: book.best_book.title,
-              rating: Number(book.average_rating),
-              apiId: Number(book.best_book.id.content),
-              author: book.best_book.author.name,
-              imageUrl: book.best_book.image_url
-            };
-          });
-          self.setState({
-            results: books
-          });
+
+      axios.get(url).then(res => {
+        const resultItems =
+          res.data.query.results.GoodreadsResponse.search.results.work;
+        const books = resultItems.map(book => {
+          return {
+            title: book.best_book.title,
+            rating: Number(book.average_rating),
+            apiId: Number(book.best_book.id.content),
+            author: book.best_book.author.name,
+            imageUrl: book.best_book.image_url
+          };
         });
-    } else if (this.state.category === 'movies') {
-        const params = {
-          api_key: '9e1ab4f6c063b70843455bf3f7852d66',
-          query: data.value
-        }
-        axios
-          .get('https://api.themoviedb.org/3/search/movie?', {params: params})
-          .then(res => console.log(res.data))
-          .catch(err => console.log(err));
-      } 
+        self.setState({
+          results: books
+        });
+      });
+    } else if (this.state.category === "movies") {
+      const params = {
+        api_key: "9e1ab4f6c063b70843455bf3f7852d66",
+        query: data.value
+      };
+      axios
+        .get("https://api.themoviedb.org/3/search/movie?", { params: params })
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err));
+    }
   }
 
   handleDropDownChange(event, data) {
@@ -183,14 +187,12 @@ class EntryListView extends React.Component {
 
   render() {
     const throttledSearch = _.debounce(this.search, 300);
-
-    if (this.state.resultDetail) {
-      return <EntryDetail result={this.state.resultDetail} />;
-    } else {
-      return (
+    return (
+      <div>  
+        <NavBar />
         <Container>
           <div className="page-title">
-            <h1>Add Recommendations</h1>
+            <h1>Add New Recommendations</h1>
           </div>
 
           <Dropdown
@@ -206,8 +208,8 @@ class EntryListView extends React.Component {
             onResultSelect={this.handleResultSelect}
           />
         </Container>
-      );
-    }
+      </div>  
+    );
   }
 }
 

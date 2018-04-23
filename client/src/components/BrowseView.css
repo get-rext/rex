@@ -1,0 +1,28 @@
+.menu-header {
+  font-size: 25px;
+}
+.menu-item {
+  font-size: 15px;
+}
+.menu-item-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+.book-title-container {
+  width: 100%;
+}
+
+.book-title {
+  margin-top: 20px;
+}
+
+.book-description {
+  margin-top: 20px;
+}
+
+.book-action-container {
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

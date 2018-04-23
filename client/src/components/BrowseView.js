@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 // Styling
 import styled from 'styled-components';
-import { Container, Header, Icon } from 'semantic-ui-react';
+import { Container, Header, Icon, Menu } from 'semantic-ui-react';
 import swal from 'sweetalert2';
+import './BrowseView.css';
 // Components
+import NavBar from './NavBar';
 import SortMenu from './SortMenu';
 import BookItem from './BookItem';
 import BrowseDetail from './Browse/BrowseDetail';
@@ -24,7 +26,7 @@ class BrowseView extends Component {
     showCompleted: false,
     clickedBook: {},
     clickedRecommendations: [],
-    detailedView: false
+    detailedView: false,
   };
 
   populateBooks() {
@@ -38,7 +40,7 @@ class BrowseView extends Component {
       .then(categoryItems => {
         this.setState({
           [category]: categoryItems,
-          bookOrder: Object.entries(categoryItems).map(([key, val]) => key)
+          bookOrder: Object.entries(categoryItems).map(([key, val]) => key),
         });
       })
       .catch(err => {
@@ -55,7 +57,7 @@ class BrowseView extends Component {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
     }).then(result => {
       if (result.value) {
         // On confirmation, send DELETE request to server
@@ -63,21 +65,19 @@ class BrowseView extends Component {
         const { userId } = this.state;
 
         fetch(`/u/${userId}/${category}/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         })
           .then(res => res.json())
           .then(data => {
             // On server response, delete item from state
             const categoryItems = this.state[category];
-            const bookOrder = this.state.bookOrder.filter(
-              bookId => bookId !== id
-            );
+            const bookOrder = this.state.bookOrder.filter(bookId => bookId !== id);
 
             delete categoryItems[id];
 
             this.setState({
               [category]: categoryItems,
-              bookOrder
+              bookOrder,
             });
           })
           .catch(err => console.log('delete unsuccessful', err));
@@ -98,22 +98,22 @@ class BrowseView extends Component {
       inputAttributes: {
         min: 0,
         max: 5,
-        step: 0.5
+        step: 0.5,
       },
-      inputValue: 2.5
+      inputValue: 2.5,
     }).then(result => {
       if (result.value) {
         // If rating confirmed, update in server
         fetch(`/u/${userId}/${category}/${id}`, {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           method: 'PUT',
           body: JSON.stringify({
             status: 'completed',
-            rating: result.value
-          })
+            rating: result.value,
+          }),
         })
           .then(res =>
             // Update rating / status in state
@@ -125,11 +125,11 @@ class BrowseView extends Component {
                   book: {
                     ...this.state[category][id].book,
                     status: 'completed',
-                    rating: result.value
-                  }
-                }
-              }
-            })
+                    rating: result.value,
+                  },
+                },
+              },
+            }),
           )
           .catch(err => console.log('insert failed'));
       }
@@ -168,14 +168,12 @@ class BrowseView extends Component {
     };
 
     // set state with the newly sorted array of books
-    const sortedArray = bookArray
-      .sort(sortBooksByRecDate)
-      .map(([id, book]) => id);
+    const sortedArray = bookArray.sort(sortBooksByRecDate).map(([id, book]) => id);
 
     console.log(sortedArray);
 
     this.setState({
-      bookOrder: sortedArray
+      bookOrder: sortedArray,
     });
   };
 
@@ -184,9 +182,8 @@ class BrowseView extends Component {
       detailedView: true,
       clickedBook: book,
       clickedRecommendations: recommendations,
-      clickedId: id
+      clickedId: id,
     });
-    //reroute the browsedetail view (bookdetails)
   };
 
   render() {
@@ -195,60 +192,48 @@ class BrowseView extends Component {
     const { activeItem, userId, showCompleted } = this.state;
     const { bookOrder } = this.state;
 
-    return this.state.detailedView ? (
-      <BrowseDetail
-        handleRemoveRec={removeItem =>
-          this.setState({
-            clickedRecommendations: removeItem
-          })
-        }
-        handleRecUpdate={categoryItems =>
-          this.setState({
-            clickedRecommendations: categoryItems
-          })
-        }
-        id={this.state.clickedId}
-        book={this.state.clickedBook}
-        recommendations={this.state.clickedRecommendations}
-      />
-    ) : (
-      <Container>
-        <Header as="h1" icon textAlign="center">
-          <Icon name="book" circular />
-          <Header.Content>Books</Header.Content>
-        </Header>
+    return (
+      <div>
+        <NavBar />
 
-        <SortMenu
-          activeItem={activeItem}
-          showCompleted={showCompleted}
-          handleItemClick={this.handleItemClick}
-          handleCompletedClick={this.handleCompletedClick}
-        />
+        <Container>
+          <Header as="h1" icon textAlign="center">
+            <Icon name="book" circular />
+            <Header.Content>Books</Header.Content>
+          </Header>
 
-        <BookList>
-          {bookOrder.length > 0 &&
-            bookOrder.map(bookId => {
-              const bookInfo = this.state.books[bookId];
-              const { book, recommendations } = bookInfo;
-              const recommendationCount = recommendations.length;
-              const { showCompleted } = this.state;
+          <SortMenu
+            activeItem={activeItem}
+            showCompleted={showCompleted}
+            handleItemClick={this.handleItemClick}
+            handleCompletedClick={this.handleCompletedClick}
+          />
 
-              if (showCompleted || book.status === 'active') {
-                return (
-                  <BookItem
-                    handleClick={props => this.handleClick(props)}
-                    id={bookId}
-                    book={book}
-                    recommendations={recommendations}
-                    deleteBook={deletedInfo => this.deleteBook(deletedInfo)}
-                    markCompleted={this.markCompleted}
-                    category={category}
-                  />
-                );
-              }
-            })}
-        </BookList>
-      </Container>
+          <BookList>
+            {bookOrder.length > 0 &&
+              bookOrder.map(bookId => {
+                const bookInfo = this.state.books[bookId];
+                const { book, recommendations } = bookInfo;
+                const recommendationCount = recommendations.length;
+                const { showCompleted } = this.state;
+
+                if (showCompleted || book.status === 'active') {
+                  return (
+                    <BookItem
+                      handleClick={props => this.handleClick(props)}
+                      id={bookId}
+                      book={book}
+                      recommendations={recommendations}
+                      deleteBook={deletedInfo => this.deleteBook(deletedInfo)}
+                      markCompleted={this.markCompleted}
+                      category={category}
+                    />
+                  );
+                }
+              })}
+          </BookList>
+        </Container>
+      </div>
     );
   }
 }

@@ -1,0 +1,42 @@
+.recommender {
+  font-size: 16px;
+}
+
+.book-image-container {
+  width: 12%;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.book-image {
+  height: 120px;
+  border-radius: 20px;
+  width: 80px;
+}
+.book-detail-container {
+  width: 58%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.book-recommender-container {
+  width: 100%;
+  align-self: flex-end;
+  margin-top: 20px;
+}
+.book-recommender-name {
+  font-weight: bold;
+}
+.book-recommended-date {
+  margin-left: 20px;
+  font-weight: bold;
+}
+.ui.text.menu {
+  background: none transparent;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  margin: 1em -0.5em;
+  font-size: 18px;
+}
