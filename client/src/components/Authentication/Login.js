@@ -20,7 +20,6 @@ class Login extends Component {
     axios
       .post('/login', this.state)
       .then(res => {
-        console.log('state being sent, ', state);
         self.props.handleAuth({ ...res.data, state });
       })
       .catch(err => console.log(err));
@@ -41,6 +40,7 @@ class Login extends Component {
             onChange={this.handleChange}
           />
           <Form.Input
+            type="password"
             placeholder="Password"
             name="password"
             value={this.state.password}

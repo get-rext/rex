@@ -51,6 +51,7 @@ class Signup extends Component {
             onChange={this.handleChange}
           />
           <Form.Input
+            type="password"
             placeholder="Password"
             name="password"
             value={this.state.password}
