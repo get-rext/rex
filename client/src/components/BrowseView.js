@@ -15,6 +15,7 @@ const BookList = styled.ul`
   width: 100%;
   padding: 5px;
   list-style: none;
+  border-top: 3px solid #2185d0;
 `;
 
 class BrowseView extends Component {
@@ -194,14 +195,7 @@ class BrowseView extends Component {
 
     return (
       <div>
-        <NavBar />
-
         <Container>
-          <Header as="h1" icon textAlign="center">
-            <Icon name="book" circular />
-            <Header.Content>Books</Header.Content>
-          </Header>
-
           <SortMenu
             activeItem={activeItem}
             showCompleted={showCompleted}

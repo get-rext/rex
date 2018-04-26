@@ -43,10 +43,18 @@ class App extends Component {
     if (isAuthenticated) {
       return (
         <div>
-          <Route exact path="/" render={() => <Home username={username} />} />
+          <Route
+            exact
+            path="/"
+            render={() => <Home username={username} handleAuth={this.handleAuth.bind(this)} />}
+          />
           <Route path="/browse/:bookId" component={BrowseDetail} />
           <Route path="/entry/:bookId" component={EntryDetail} />
-          <Route exact path="/entry" component={EntryListView} />
+          <Route
+            exact
+            path="/entry"
+            render={() => <EntryListView handleAuth={this.handleAuth.bind(this)} />}
+          />
           <Route exact path="/browse" component={BrowseView} />
         </div>
       );

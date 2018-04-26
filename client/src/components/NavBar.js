@@ -1,55 +1,78 @@
-import React from "react";
-import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
-import {
-  Navbar,
-  Nav,
-  NavItem,
-  NavDropdown,
-  MenuItem,
-} from "react-bootstrap";
-import { Icon } from "semantic-ui-react";
-const NavBar = () => {
-  return (
-    <div>
-      <Navbar inverse collapseOnSelect>
+import React, { Component } from 'react';
+import { Route, Link, BrowserRouter, Switch, Redirect } from 'react-router-dom';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Icon } from 'semantic-ui-react';
+import axios from 'axios';
+import rex from '../images/rex.svg';
+
+class NavBar extends Component {
+  state = {};
+
+  handleLogout() {
+    const self = this;
+    axios
+      .get('/logout')
+      .then(res => {
+        self.props.handleAuth({ ...res.data });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  render() {
+    if (this.props.loggedIn) {
+      return (
+        <Navbar collapseOnSelect>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to="/">
+                <span>
+                  <img src={rex} height="45" />
+                  Rex
+                </span>
+              </Link>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Profile />
+            <Logout handleLogout={this.handleLogout.bind(this)} />
+          </Navbar.Collapse>
+        </Navbar>
+      );
+    }
+    return (
+      <Navbar>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/">Rex</Link>
+            <Link to="/">
+              <span>
+                <img src={rex} height="45" />
+                Rex
+              </span>
+            </Link>
           </Navbar.Brand>
-          <Navbar.Toggle />
         </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav>
-            <NavItem eventKey={2} href="#">
-              Profile
-            </NavItem>
-            <NavDropdown eventKey={3} title="My List" id="basic-nav-dropdown">
-              <MenuItem eventKey={3.1}>
-                <Link to="/browse">Books </Link>
-              </MenuItem>
-              <MenuItem eventKey={3.2}>
-                <Link to="/browse">Food</Link>
-              </MenuItem>
-              <MenuItem eventKey={3.3}>
-                <Link to="/browse"> Movies</Link>
-              </MenuItem>
-              <MenuItem eventKey={3.3}>
-                <Link to="/browse">Music </Link>
-              </MenuItem>
-            </NavDropdown>
-          </Nav>
-          <Nav pullRight>
-            <NavItem eventKey={1}>
-              <Link to="/entry">
-                <Icon name="plus" size="large" />
-              </Link>
-            </NavItem>
-            <NavItem eventKey={1.2}>Log out</NavItem>
-          </Nav>
-        </Navbar.Collapse>
       </Navbar>
-    </div>
-  );
-};
+    );
+  }
+}
+
+const Profile = () => (
+  <Nav>
+    <NavItem eventKey={2} href="#">
+      Profile
+    </NavItem>
+  </Nav>
+);
+
+const Logout = props => (
+  <Nav pullRight>
+    <NavItem eventKey={2} onClick={props.handleLogout}>
+      Log out
+    </NavItem>
+  </Nav>
+);
 
 export default NavBar;
