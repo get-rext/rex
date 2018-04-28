@@ -15,12 +15,13 @@ const BookList = styled.ul`
   width: 100%;
   padding: 5px;
   list-style: none;
+  border-top: 3px solid #2185d0;
 `;
 
 class BrowseView extends Component {
   state = {
-    userId: 3,
-    activeItem: 'Recommendations',
+    userId: this.props.userId,
+    activeItem: '',
     books: {},
     bookOrder: [],
     showCompleted: false,
@@ -34,11 +35,11 @@ class BrowseView extends Component {
     const { userId } = this.state;
     // Use 'category' and 'categoryItems' to eventually add other categories
     // For now, category and sort is hard-coded to books
-
+    const that = this;
     fetch(`/u/${userId}/${category}`)
       .then(res => res.json())
       .then(categoryItems => {
-        this.setState({
+        that.setState({
           [category]: categoryItems,
           bookOrder: Object.entries(categoryItems).map(([key, val]) => key),
         });
@@ -167,10 +168,17 @@ class BrowseView extends Component {
       }
     };
 
-    // set state with the newly sorted array of books
-    const sortedArray = bookArray.sort(sortBooksByRecDate).map(([id, book]) => id);
+    const sortBooksByNumberOfRex = (book1, book2) => {
+      return book2[1].recommendations.length - book1[1].recommendations.length;
+    };
 
-    console.log(sortedArray);
+    // set state with the newly sorted array of books
+    let sortedArray;
+    if (sortType === 'Recommendations') {
+      sortedArray = bookArray.sort(sortBooksByNumberOfRex).map(([id, book]) => id);
+    } else {
+      sortedArray = bookArray.sort(sortBooksByRecDate).map(([id, book]) => id);
+    }
 
     this.setState({
       bookOrder: sortedArray,
@@ -194,21 +202,13 @@ class BrowseView extends Component {
 
     return (
       <div>
-        <NavBar />
-
         <Container>
-          <Header as="h1" icon textAlign="center">
-            <Icon name="book" circular />
-            <Header.Content>Books</Header.Content>
-          </Header>
-
           <SortMenu
             activeItem={activeItem}
             showCompleted={showCompleted}
             handleItemClick={this.handleItemClick}
             handleCompletedClick={this.handleCompletedClick}
           />
-
           <BookList>
             {bookOrder.length > 0 &&
               bookOrder.map(bookId => {
@@ -216,12 +216,27 @@ class BrowseView extends Component {
                 const { book, recommendations } = bookInfo;
                 const recommendationCount = recommendations.length;
                 const { showCompleted } = this.state;
-
-                if (showCompleted || book.status === 'active') {
+                if (!showCompleted && book.status === 'active') {
+                  return (
+                    <div>
+                    <BookItem
+                      handleClick={props => this.handleClick(props)}
+                      id={bookId}
+                      userId={this.state.userId}
+                      book={book}
+                      recommendations={recommendations}
+                      deleteBook={deletedInfo => this.deleteBook(deletedInfo)}
+                      markCompleted={this.markCompleted}
+                      category={category}
+                    />
+                    </div>
+                  );
+                } else if (showCompleted && book.status === 'completed') {
                   return (
                     <BookItem
                       handleClick={props => this.handleClick(props)}
                       id={bookId}
+                      userId={this.state.userId}
                       book={book}
                       recommendations={recommendations}
                       deleteBook={deletedInfo => this.deleteBook(deletedInfo)}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Form, Input, TextArea } from 'semantic-ui-react';
 
 class AddRecommenderForm extends Component {
   state = {
@@ -22,7 +23,7 @@ class AddRecommenderForm extends Component {
       comments,
     };
     const category = 'books';
-    const userId = 3;
+    const userId = this.props.userId;
     //update recommendation table,
     console.log('this', this);
     fetch(`/r/${category}/${bookInfo.id}`, {

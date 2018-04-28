@@ -60,7 +60,7 @@ class BrowseDetail extends Component {
         </header>
         <Item.Group>
           {this.state.recs.map(recommendation => (
-            <RecommendationListItem recommendation={recommendation} />
+            <RecommendationListItem recommendation={recommendation} userId={target.userId} />
           ))}
         </Item.Group>
         <div className="button-list-container">
