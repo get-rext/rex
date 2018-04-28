@@ -1,0 +1,9 @@
+.completedOption {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  color: #000000;
+  text-decoration: none;
+}
+.ui.text.menu .item {
+  color: rgba(0, 0, 0, 0.4);
+}

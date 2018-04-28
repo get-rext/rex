@@ -4,18 +4,67 @@
 }
 
 .ui.selection.dropdown,
-.ui.search {
+.ui.search,
+.results {
   margin: 15px auto;
   width: 60%;
-  max-width: 500px;
 }
 
-.ui.icon.input,
-.ui.search > .results {
-  width: 100%;
+.ui.input.search > input {
+  border-radius: 20px;
+}
+
+.results {
+  margin: 0px auto;
+  background-color: rgba(25,25,25,.1);
+  border-radius: 15px;
+}
+
+.search-entry {
+  display: grid;
+  grid-template-columns: 33% 66%;
+  margin: 10px 0px;
+}
+
+.search-entry:hover {
+  background-color: rgba(150,150,150,.3);
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.book-image,
+.result-image {
+  grid-column: 1;
+}
+
+.restaurant-image {
+  border-radius: 33%;
+}
+
+.book-data,
+.book-data > h4,
+.result-data > h4 {
+  grid-column: 2;
+  text-align: left;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.restaurant-data > p {
+  margin-bottom: 0px;
 }
 
 .entry-image {
   float: right;
   width: 30px;
+}
+
+@media (max-width: 500) {
+  .results {
+    width: 100%;
+  }
+  .search-entry {
+    display:grid;
+    grid-template-columns: 50% 50%;
+  }
 }

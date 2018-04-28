@@ -2,3 +2,19 @@
 .ui.form .fields:last-child .field {
   width: auto;
 }
+
+.auth {
+  margin-top: 75px;
+  text-align: center;
+}
+
+.auth-button {
+  height: 65px;
+  width: 150px;
+}
+
+.ui.blue.right.floated.button.login-button,
+.ui.blue.right.floated.button.signup-button {
+  margin-top: 25px;
+  width: 100px;
+}

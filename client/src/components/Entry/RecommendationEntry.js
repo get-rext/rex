@@ -23,19 +23,10 @@ class RecommendationEntry extends Component {
     e.preventDefault();
     const { firstName, lastName, comments } = this.state;
     // send our data to server and server will save to the db
-    const {
-      title,
-      authors,
-      description,
-      imageUrl,
-      link,
-      rating,
-      yearPublished,
-      apiId
-    } = this.props.entry;
+    const {title, authors, description, imageUrl, link, rating, yearPublished, apiId } = this.props.entry;
 
-    const category = "books";
-    const userId = 3;
+    const category = this.props.category;
+    const userId = this.props.userId;
     const bookInfo = {
       title,
       imageUrl,
@@ -75,7 +66,7 @@ class RecommendationEntry extends Component {
 
   render() {
     return this.state.inserted ? (
-      <Redirect to="/browse" />
+      <Redirect to="/" />
     ) : (
       <Container>
         <Divider />

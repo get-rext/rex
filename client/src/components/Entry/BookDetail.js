@@ -1,5 +1,6 @@
 import React from 'react';
 import { Rating, Header, Container, Image } from 'semantic-ui-react';
+import CheckOutButton from '../Forms/CheckOutButton';
 
 const BookDetail = (props) => {
   const {
@@ -17,6 +18,7 @@ const BookDetail = (props) => {
         <Image as="a" href={link} src={imageUrl} size="small" floated="left" />
         {description.map(paragraph => <p>{paragraph}</p>)}
         <p>Year Published: {yearPublished}</p>
+        <CheckOutButton url="link" />
       </Container>
     </div>
   );

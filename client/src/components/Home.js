@@ -1,28 +1,15 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import './Home.css';
-import book from '../images/book.png';
-import music from '../images/music.png';
-import movie from '../images/movie.png';
-import food from '../images/food.png';
 import NavBar from './NavBar';
+import BrowseView from './BrowseView';
 import { Route, Link, BrowserRouter, Switch, Redirect } from 'react-router-dom';
-import { Dropdown, Menu, Button, Container, Header, Icon } from 'semantic-ui-react';
+import { Dropdown, Menu, Button, Container, Header, Icon, Table, Grid } from 'semantic-ui-react';
 
 import { Row, Col } from 'reactstrap';
 
 import BookDetail from './Entry/BookDetail';
-
-const NewRecommendationButton = () => (
-  <div className="newRecButton">
-    <Link to="/entry">
-      <Button size="massive" color="teal" borderRadius="30px">
-        New Recommendations
-        <Icon className="plus" name="plus" />
-      </Button>
-    </Link>
-  </div>
-);
+import NewRexButton from './NewRexButton.js';
 
 class Home extends Component {
   state = {
@@ -40,84 +27,41 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <NavBar />
-        <div className="userName">Welcome! {this.props.username}</div>
-
-        <div className="icon-list">
-          <div>
-            <Link to="/browse">
-              <img
-                src={book}
-                width="80"
-                height="80"
-                onLoad={this.handleImageLoaded.bind(this)}
-                onError={this.handleImageErrored.bind(this)}
-              />
-            </Link>
-          </div>
-          <div>
-            <img
-              src={food}
-              width="80"
-              height="80"
-              onLoad={this.handleImageLoaded.bind(this)}
-              onError={this.handleImageErrored.bind(this)}
-            />
-          </div>
-          <div>
-            <img
-              src={music}
-              width="80"
-              height="80"
-              onLoad={this.handleImageLoaded.bind(this)}
-              onError={this.handleImageErrored.bind(this)}
-            />
-          </div>
-          <div>
-            <img
-              src={movie}
-              width="80"
-              height="80"
-              onLoad={this.handleImageLoaded.bind(this)}
-              onError={this.handleImageErrored.bind(this)}
-            />
-          </div>
+        <NavBar loggedIn={true} handleAuth={this.props.handleAuth} />
+        <div className="landing-page icon-list">
+          <Button
+            circular
+            className="active category-button round-button"
+            size="massive"
+            color="red"
+            icon="book"
+          />
+          <Button
+            circular
+            className="category-button round-button"
+            size="massive"
+            color="blue"
+            icon="utensils"
+          />
+          <Button
+            circular
+            className="category-button round-button"
+            size="massive"
+            color="green"
+            icon="music"
+          />
+          <Button
+            circular
+            className="category-button round-button"
+            size="massive"
+            color="yellow"
+            icon="film"
+          />
         </div>
-        <div>
-          <div className="newRec-button">
-            <NewRecommendationButton />
-          </div>
+        <BrowseView userId={this.props.userId} />
+        <div className="newRecBuffer">
+          <NewRexButton />
         </div>
-      </div>
-    );
-  }
-}
-
-class FindRecommendationButton extends Component {
-  state = {
-    category: '',
-  };
-
-  render() {
-    return (
-      <div>
-        <Menu vertical>
-          <Dropdown text="Find Something from" pointing="left" className="link item">
-            <Dropdown.Menu>
-              <Dropdown.Item
-                onClick={() => {
-                  this.setState({ category: 'books' });
-                  //<Redirect to="/browse" />;
-                  //redirect is like component
-                }}
-              >
-                <Link to="/browse">Books</Link>
-              </Dropdown.Item>
-              <Dropdown.Item>Movies</Dropdown.Item>
-              <Dropdown.Item>Restaurants</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Menu>
       </div>
     );
   }

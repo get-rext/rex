@@ -1,9 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const uuidv4 = require('uuid/v4');
+const axios = require('axios');
+const { getSong } = require('../helpers/spotify');
 
 const authObj = {};
 
@@ -60,7 +63,9 @@ app.post('/login', (req, res) => {
   const { username, password } = req.body;
   promiseQuery(FIND_USER(username))
     .then((sqlResponse) => {
-      const { id, password: hash } = sqlResponse[0];
+      const {
+        id, password: hash, first_name, last_name,
+      } = sqlResponse[0];
       bcrypt.compare(password, hash, (err, doesMatch) => {
         if (err) {
           console.error(err);
@@ -68,7 +73,13 @@ app.post('/login', (req, res) => {
           const key = uuidv4();
           authObj[key] = id;
           req.session.uuid = key;
-          res.send({ isAuthenticated: true, username });
+          res.send({
+            isAuthenticated: true,
+            username,
+            id,
+            first_name,
+            last_name,
+          });
         } else {
           res.send({ isAuthenticated: false });
         }
@@ -80,25 +91,35 @@ app.post('/login', (req, res) => {
     });
 });
 
+// LOGOUT
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.json({ isAuthenticated: false, username: null });
+});
+
 // SIGNUP
 app.post('/signup', (req, res) => {
   const {
     username, password, firstName, lastName,
   } = req.body;
   promiseQuery(FIND_USER(username))
-    .then(() => {
-      console.log(`signup validation err, username '${username}' already exists`);
-    })
-    .catch(() => {
-      bcrypt.hash(password, 10, (err, hash) => {
-        insertQuery(ADD_USER(username, hash, firstName, lastName)).then((sqlResponse) => {
-          const { id } = sqlResponse[0][0];
-          const key = uuidv4();
-          authObj[key] = id;
-          req.session.uuid = key;
-          res.send({ isAuthenticated: true, username });
+    .then((user) => {
+      if (!user.length) {
+        bcrypt.hash(password, 10, (err, hash) => {
+          insertQuery(ADD_USER(username, hash, firstName, lastName)).then((sqlResponse) => {
+            const { id } = sqlResponse[0][0];
+            const key = uuidv4();
+            authObj[key] = id;
+            req.session.uuid = key;
+            res.json({ isAuthenticated: true, username });
+          });
         });
-      });
+      } else {
+        res.json({ isAuthenticated: false, username: null });
+      }
+    })
+    .catch((error) => {
+      throw error;
     });
 });
 
@@ -154,7 +175,6 @@ app.get('/u/:userId/:category', getUserId, (req, res) => {
         return bookItems;
       }, {});
       res.json(parsedBooks);
-      res.end();
     })
     .catch(err => res.end('404', err));
 });
@@ -260,9 +280,47 @@ app.delete('/u/:userId/:category/:itemId', getUserId, (req, res) => {
     .catch(err => console.log(err));
 });
 
+// HIT YELP API FOR RESTAURANT LIST
+app.get('/helpers/food', (req, res) => {
+  axios
+    .request({
+      url: 'https://api.yelp.com/v3/businesses/search',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${process.env.YELP_API}`,
+      },
+      params: {
+        term: req.query.query,
+        location: req.query.location,
+        categories: 'restaurants',
+      },
+    })
+    .then((results) => {
+      res.json(results.data);
+    })
+    .catch(err => console.error(err));
+});
+
+// YELP API FOR RESTAURANT DETAILS
+app.get('/helpers/food/details', (req, res) => {
+  axios
+    .request({
+      url: `https://api.yelp.com/v3/businesses/${req.query.id}`,
+      headers: {
+        Authorization: `Bearer ${process.env.YELP_API}`,
+      },
+    })
+    .then((results) => {
+      res.json(results.data);
+    });
+});
+
+app.get('/helpers/spotify', (req, res) => {
+  getSong(req.query.song).then(data => res.json(JSON.parse(data.body)));
+});
+
 // SERVE REACT INDEX.HTML FOR ALL UNHANDLED REQUESTS
 app.get('/*', (req, res) => {
-  console.log('trying to route');
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
