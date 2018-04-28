@@ -34,3 +34,7 @@ node_modules/
 .flooignore
 
 .DS_Store
+
+.env
+package-lock.json
+client/dist/bundle.js

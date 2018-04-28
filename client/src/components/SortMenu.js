@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from 'semantic-ui-react';
+import { Menu, Header, Dropdown, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const MenuBar = styled.div`
@@ -10,39 +10,45 @@ const MenuBar = styled.div`
 `;
 
 const SortMenu = ({
-  activeItem,
-  showCompleted,
-  handleItemClick,
-  handleCompletedClick
-}) => {
-  return (
-    <MenuBar>
-      <Menu text>
-        <Menu.Item header>Sort By</Menu.Item>
-        <Menu.Item
-          name="Recommendations"
-          active={activeItem === 'Recommendations'}
-          onClick={handleItemClick}
-        />
-        <Menu.Item
-          name="Oldest"
-          active={activeItem === 'Oldest'}
-          onClick={handleItemClick}
-        />
-        <Menu.Item
-          name="Newest"
-          active={activeItem === 'Newest'}
-          onClick={handleItemClick}
-        />
-        <Menu.Item
-          name="Show Completed"
-          className="completedOption"
-          active={showCompleted}
-          onClick={handleCompletedClick}
-        />
-      </Menu>
-    </MenuBar>
-  );
-};
+  activeItem, showCompleted, handleItemClick, handleCompletedClick,
+}) => (
+  <div className="sort-menu">
+    <Header as="h4">
+      <Icon name="filter" />
+      <Header.Content>
+        Filter by{' '}
+        <Dropdown inline defaultValue="Recommendations">
+          <Dropdown.Menu>
+            <Dropdown.Item
+              name="Recommendations"
+              text="Recommendations"
+              active={activeItem === 'Recommendations'}
+              onClick={handleItemClick}
+            />
+            <Dropdown.Item
+              name="Oldest"
+              text="Oldest"
+              active={activeItem === 'Oldest'}
+              onClick={handleItemClick}
+            />
+            <Dropdown.Item
+              name="Newest"
+              text="Newest"
+              active={activeItem === 'Newest'}
+              onClick={handleItemClick}
+            />
+            <Menu.Item
+              name="Show Completed"
+              text="Completed"
+              className="completedOption"
+              active={showCompleted}
+              onClick={handleCompletedClick}
+            />
+          </Dropdown.Menu>
+        </Dropdown>
+      </Header.Content>
+    </Header>
+  </div>
+);
 
 export default SortMenu;

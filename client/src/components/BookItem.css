@@ -1,36 +1,10 @@
-.recommender {
-  font-size: 16px;
-}
-
-.book-image-container {
-  width: 12%;
-  padding: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.book-image {
-  height: 120px;
-  border-radius: 20px;
-  width: 80px;
-}
-.book-detail-container {
-  width: 58%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.book-recommender-container {
-  width: 100%;
-  align-self: flex-end;
-  margin-top: 20px;
-}
-.book-recommender-name {
-  font-weight: bold;
-}
-.book-recommended-date {
-  margin-left: 20px;
-  font-weight: bold;
+.title,
+.title:hover,
+.title:focus {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  color: #000000;
+  text-decoration: none;
 }
 .ui.text.menu {
   background: none transparent;
@@ -44,4 +18,18 @@
 .book-option:hover {
   cursor: pointer;
   color: rgb(53, 122, 201);
+}
+
+.ui.grid {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.ui.icon.button.upvote-item {
+  padding: 0.78571429em 0.78571429em 0.78571429em;
+}
+
+.ui.column.grid .row {
+  margin: 1rem 0;
 }
