@@ -97,7 +97,7 @@ VALUES(DEFAULT, null,'${userId}' , '${`${firstName} ${lastName}`}', '${comments}
   RETURNING *;
   `;
 
-exports.FIND_USER = username => `SELECT id, password FROM users
+exports.FIND_USER = username => `SELECT id, password, first_name, last_name FROM users
     WHERE username = '${username}';`;
 exports.ADD_USER = (username, passwordHash, firstName, lastName) => ` 
   INSERT INTO users (id, username, password, first_name, last_name)

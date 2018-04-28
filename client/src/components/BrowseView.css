@@ -26,3 +26,21 @@
   align-items: center;
   justify-content: center;
 }
+
+.ui.container {
+  width: 800px;
+}
+
+.sort-menu {
+  height: 40px;
+}
+
+.sort-menu .ui.header {
+  line-height: 40px;
+  margin-top: 20px;
+}
+
+h4.ui.header,
+.ui.dropdown .menu > .item {
+  font-size: 1.5rem;
+}
